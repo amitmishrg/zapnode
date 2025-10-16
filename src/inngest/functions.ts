@@ -3,12 +3,17 @@ import { inngest } from './client';
 import { generateText } from 'ai';
 import { google } from '@ai-sdk/google';
 import { openai } from '@ai-sdk/openai';
+import * as Sentry from '@sentry/nextjs';
 
 export const execute = inngest.createFunction(
   { id: 'execute' },
   { event: 'execute/ai' },
   async ({ event, step }) => {
     const prompt = event.data.prompt;
+
+    Sentry.logger.info('User triggered test log', {
+      log_source: 'sentry_test',
+    });
 
     const { steps: geminiSteps } = await step.ai.wrap(
       'gemini-generate-text',
