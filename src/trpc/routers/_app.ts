@@ -2,10 +2,22 @@ import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '../init';
 import prisma from '@/lib/db';
 import { inngest } from '@/inngest/client';
+import { generateText } from 'ai';
+import { google } from '@ai-sdk/google';
 
 export const appRouter = createTRPCRouter({
   getWorkflows: protectedProcedure.query(({ ctx }) => {
     return prisma.workflow.findMany();
+  }),
+  testAI: protectedProcedure.mutation(async ({ ctx }) => {
+    await inngest.send({
+      name: 'execute/ai',
+      data: {
+        prompt: 'What is the capital of US?',
+      },
+    });
+
+    return { success: true, message: 'Job queued' };
   }),
   createWorkflow: protectedProcedure
     .input(z.object({ name: z.string() }))
