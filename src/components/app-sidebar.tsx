@@ -22,8 +22,8 @@ import {
 } from './ui/sidebar';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { Button } from './ui/button';
 import { authClient } from '@/lib/auth-client';
+import { useHasActiveSubscription } from '@/features/subscriptions/hooks/use-subscription';
 
 const menuItems = [
   {
@@ -51,6 +51,7 @@ const menuItems = [
 export const AppSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
 
   const isActive = (href: string) => pathname.startsWith(href);
 
@@ -99,20 +100,30 @@ export const AppSidebar = () => {
 
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              tooltip="Upgrade to Pro"
-              className="gap-x-4 h-10 px-4"
-            >
-              <StarIcon className="size-4" />
-              <span>Upgrade to Pro</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {!hasActiveSubscription && !isLoading && (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip="Upgrade to Pro"
+                className="gap-x-4 h-10 px-4"
+                onClick={() => {
+                  authClient.checkout({
+                    slug: 'Zapnode-Pro',
+                  });
+                }}
+              >
+                <StarIcon className="size-4" />
+                <span>Upgrade to Pro</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
 
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Billing Portal"
               className="gap-x-4 h-10 px-4"
+              onClick={() => {
+                authClient.customer.portal();
+              }}
             >
               <CreditCardIcon className="size-4" />
               <span>Billing Portal</span>
@@ -121,7 +132,7 @@ export const AppSidebar = () => {
 
           <SidebarMenuItem>
             <SidebarMenuButton
-              tooltip="Logout"
+              tooltip="Sign Out"
               className="gap-x-4 h-10 px-4"
               onClick={() =>
                 authClient.signOut({
@@ -134,7 +145,7 @@ export const AppSidebar = () => {
               }
             >
               <LogOutIcon className="size-4" />
-              <span>Logout</span>
+              <span>Sign Out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
