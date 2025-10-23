@@ -99,7 +99,8 @@ export const NodeSelector = (props: NodeSelectorProps) => {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetTrigger>{children}</SheetTrigger>
+      <SheetTrigger asChild>{children}</SheetTrigger>
+
       <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
         <SheetHeader>
           <SheetTitle>What triggers this workflow?</SheetTitle>
