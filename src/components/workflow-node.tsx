@@ -46,7 +46,9 @@ export const WorkflowNode = (props: WorkflowNodeProps) => {
           <p className="text-sm font-medium">{name}</p>
 
           {description && (
-            <p className="text-xs text-muted-foreground">{description}</p>
+            <p className="text-xs text-muted-foreground truncate">
+              {description}
+            </p>
           )}
         </NodeToolbar>
       )}
